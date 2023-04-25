@@ -27,11 +27,11 @@ spec:
     chart: kube-prometheus-stack
     targetRevision: 45.2.0
     helm:
-      valueFiles:
-      - $values/prod/prometheus/values.yml
-  - repoURL: git@github.com:kyrbrbik/kubernetes.git
-    targetRevision: main
-    ref: values
+      #      valueFiles:
+      #      - $values/prod/prometheus/values.yml
+      #  - repoURL: git@github.com:kyrbrbik/kubernetes.git
+      #    targetRevision: main
+      #    ref: values
   destination:      
     server: https://kubernetes.default.svc
     namespace: monitoring
