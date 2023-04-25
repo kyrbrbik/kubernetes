@@ -24,15 +24,15 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
+  sources:
+  - repoURL: https://prometheus-community.github.io/helm-charts
     chart: kube-prometheus-stack
-    repoURL: https://prometheus-community.github.io/helm-charts
     targetRevision: 45.21.0
     helm:
-      releaseName: kube-prometheus
       valueFiles:
-      - values.yml
-  destination:
+      - $values/prod/prometheus/values.yml
+  - repoURL: git@github.com:kyrbrbik/kubernetes.git
+    destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
 
