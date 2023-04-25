@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: git@github.com:kyrbrbik/kubernetes.git
     targetRevision: HEAD
-    path: prod/kunde-web/
+    path: prod/web/
   destination:
     server: https://kubernetes.default.svc
     namespace: web
