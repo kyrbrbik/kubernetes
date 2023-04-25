@@ -22,6 +22,8 @@ kind: Application
 metadata:
   name: prometheus-helm
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-options: ServerSideApply=true
 spec:
   project: default
   sources:
