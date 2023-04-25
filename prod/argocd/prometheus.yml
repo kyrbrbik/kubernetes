@@ -29,12 +29,14 @@ spec:
   sources:
   - repoURL: https://prometheus-community.github.io/helm-charts
     chart: kube-prometheus-stack
-    targetRevision: 45.21.0
+    targetRevision: 45.2.0
     helm:
       valueFiles:
       - $values/prod/prometheus/values.yml
   - repoURL: git@github.com:kyrbrbik/kubernetes.git
-    destination:
+    targetRevision: main
+    ref: values
+  destination:      
     server: https://kubernetes.default.svc
     namespace: monitoring
 
