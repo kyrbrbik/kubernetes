@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: web-argo
+  namespace: argocd
+  annotations: 
+    argocd-image-updater.argoproj.io/image-list: index.docker.io/brbik/kunde100-web:latest.pull-secret:web-prod/regcred
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:kyrbrbik/kubernetes.git
+    targetRevision: HEAD
+    path: prod/kunde-web/
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: web
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true

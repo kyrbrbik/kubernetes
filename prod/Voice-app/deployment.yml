@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: voice-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: voice-app
+  template:
+    metadata:
+      labels:
+        app: voice-app
+    spec:
+      containers:
+      - name: voice-app-container
+        image: index.docker.io/brbik/python-web:latest
+        ports:
+        - containerPort: 5000
+        env:
+          - name: SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: apisecret
+                key: apisecret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: voice-app-service
+spec:
+  selector:
+    app: voice-app
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 5000
+  type: LoadBalancer
+
+
+

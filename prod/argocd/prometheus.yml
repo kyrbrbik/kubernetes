@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus-argo
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:kyrbrbik/kubernetes.git
+    targetRevision: HEAD
+    path: prod/prometheus
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
