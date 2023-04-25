@@ -5,5 +5,3 @@ metadata:
   namespace: monitoring
 spec:
   type: LoadBalancer
-status:
-  loadBalancer: {}
