@@ -1,0 +1,161 @@
+image:
+  repository: nextcloud
+  tag: 23.0-apache
+nextcloud:
+  host: nextcloud.kunde100.com
+  username: admin
+  password: changeme
+  ## Use an existing secret
+  existingSecret:
+    enabled: true
+    secretName: nextcloud-secret
+    usernameKey: nextcloud-username
+    passwordKey: nextcloud-password
+  update: 0
+  # If web server is not binding default port, you can define it
+  containerPort: 80
+  datadir: /var/www/html/data
+  persistence:
+    subPath:
+  strategy:
+    type: Recreate
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+
+internalDatabase:
+  enabled: false
+  name: nextcloud
+
+service:
+  type: ClusterIP
+  port: 80
+
+externalDatabase:
+  enabled: true
+
+  ## Supported database engines: mysql or postgresql
+  type: postgresql
+
+  ## Database host
+  host: nextcloud-postgresql
+
+  ## Database user
+  user: nextcloud
+
+  ## Database password
+  password: postgrespassword
+
+  ## Database name
+  database: nextcloud
+
+  ## Use a existing secret
+  #existingSecret:
+  #  enabled: false
+  #  secretName: "postgres-secret"
+  #  usernameKey: "postgres-user"
+  #  passwordKey: "postgres-password"
+
+postgresql:
+  enabled: true
+  global:
+    postgresql:
+      auth:
+        username: nextcloud
+        password: postgrespassword
+        database: nextcloud
+      # global.postgresql.auth overrides postgresql.auth
+        # Name of existing secret to use for PostgreSQL credentials.
+        # auth.postgresPassword, auth.password, and auth.replicationPassword will be ignored and picked up from this secret.
+        # secret might also contains the key ldap-password if LDAP is enabled.
+        # ldap.bind_password will be ignored and picked from this secret in this case.
+        existingSecret: ""
+        # Names of keys in existing secret to use for PostgreSQL credentials
+        # secretKeys:
+        # adminPasswordKey: "postgres-password"
+        # userPasswordKey: "postgres-user"
+        # replicationPasswordKey: "postgres-replication"
+  primary:
+    persistence:
+      enabled: true
+      # Use an existing Persistent Volume Claim (must be created ahead of time)
+      # existingClaim: ""
+      # storageClass: ""
+redis:
+  enabled: false
+  auth:
+    enabled: false
+    password: 'changeme'
+    # name of an existing secret with Redis® credentials (instead of auth.password), must be created ahead of time
+    #existingSecret: "redis-secret"
+    # Password key to be retrieved from existing secret
+    #existingSecretPasswordKey: "redis-password"
+
+persistence:
+  # Nextcloud Data (/var/www/html)
+  enabled: true
+  annotations: {}
+  storageClass: "longhorn"
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  existingClaim: config-pvc
+
+  ## Use an additional pvc for the data directory rather than a subpath of the default PVC
+  ## Useful to store data on a different storageClass (e.g. on slower disks)
+  nextcloudData:
+    enabled: true
+    subPath:
+    annotations: {}
+    storageClass: "longhorn"
+    existingClaim: database-pvc
+
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 200Mi
+
+## Enable pod autoscaling using HorizontalPodAutoscaler
+## ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+##
+hpa:
+  enabled: false
+  cputhreshold: 60
+  minPods: 1
+  maxPods: 10
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+livenessProbe:
+  enabled: false
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 100
+  successThreshold: 1
+readinessProbe:
+  enabled: false
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 100
+  successThreshold: 1
+startupProbe:
+  enabled: false
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 30
+  successThreshold: 1
