@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: cloudflared
+  name: cloudflared-discord
+  namespace: cloudflare
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  revisionHistoryLimit: 0
+  replicas: 2
+  selector:
+    matchLabels:
+      pod: cloudflared-discord
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        pod: cloudflared-discord
+    spec:
+      containers:
+      - command:
+        - cloudflared
+        - tunnel
+        - --metrics
+        - 0.0.0.0:2000
+        - run
+        image: cloudflare/cloudflared:latest
+        name: cloudflared
+        env:
+          - name: TUNNEL_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: discord-secret
+                key: token
+          - name: TUNNEL_TRANSPORT_PROTOCOL
+            value: http2
+        livenessProbe:
+          httpGet:
+            path: /ready
+            port: 2000
+          failureThreshold: 5
+          initialDelaySeconds: 10
+          periodSeconds: 10
+

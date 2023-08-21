@@ -1,0 +1,4 @@
+data:
+  provider.yml: |-
+    providers:
+      allowUiUpdates: true

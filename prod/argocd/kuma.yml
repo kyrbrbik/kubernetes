@@ -1,17 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: metallb-argo
+  name: kuma-argo
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: git@github.com:Kunde100/Kunde-k8s.git
     targetRevision: HEAD
-    path: prod/metal-lb
+    path: prod/kuma
   destination:
     server: https://kubernetes.default.svc
-    namespace: metallb-system
+    namespace: kuma
   syncPolicy:
     automated:
       selfHeal: true
